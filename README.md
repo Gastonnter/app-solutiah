@@ -1,48 +1,112 @@
-# app
+# App de Gestión de Sucursales y Empleados
 
-This template should help get you started developing with Vue 3 in Vite.
+Este proyecto es una aplicación web para la gestión de sucursales y empleados, desarrollada en Vue 3 + TypeScript, siguiendo principios de **Clean Architecture** y buenas prácticas de desarrollo frontend.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🏗️ Arquitectura
 
-## Recommended Browser Setup
+La aplicación está estructurada siguiendo los principios de **Clean Architecture** para lograr un código desacoplado, mantenible y fácilmente testeable.  
+Las capas principales son:
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Presentación (Views/Components):**  
+  Componentes Vue reutilizables y desacoplados de la lógica de negocio.  
+  Ejemplo: `EmpleadoForm.vue`, `SucursalesList.vue`.
 
-## Type Support for `.vue` Imports in TS
+- **Stores (Estado):**  
+  Manejo del estado global con [Pinia](https://pinia.vuejs.org/), actuando como intermediario entre la UI y los servicios.  
+  Ejemplo: `empleadoStore.ts`, `sucursalStore.ts`.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **Servicios (Services):**  
+  Encapsulan la comunicación con la API REST, desacoplando la lógica de red del resto de la app.  
+  Ejemplo: `empleadoService.ts`, `sucursalService.ts`.
 
-## Customize configuration
+- **Tipos (Types):**  
+  Definición de interfaces y tipos TypeScript para garantizar tipado estricto y evitar errores.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+Esta arquitectura permite:
 
-## Project Setup
+- **Reutilización:** Componentes y servicios desacoplados y reutilizables.
+- **Escalabilidad:** Fácil de agregar nuevas funcionalidades o entidades.
+- **Testabilidad:** Cada capa puede ser testeada de forma aislada.
+- **Mantenibilidad:** Separación clara de responsabilidades.
 
-```sh
-npm install
+---
+
+## ⚙️ Dependencias Principales
+
+- **Vue 3**: Framework principal.
+- **TypeScript**: Tipado estático.
+- **Pinia**: Manejo de estado global.
+- **PrimeVue**: Librería de componentes UI.
+- **Axios**: Cliente HTTP para la comunicación con la API.
+- **Vite**: Herramienta de build y desarrollo rápido.
+
+---
+
+## 🚀 ¿Cómo funciona?
+
+1. **Navegación:**
+   - `/sucursales`: Listado, creación, edición y eliminación de sucursales.
+   - `/empleados`: Listado, creación, edición y eliminación de empleados.
+
+2. **Flujo de datos:**
+   - Los componentes de UI disparan eventos (crear, editar, eliminar).
+   - Los stores gestionan el estado y llaman a los servicios.
+   - Los servicios interactúan con la API REST.
+   - El estado se actualiza y la UI reacciona automáticamente.
+
+3. **Validaciones:**
+   - Formularios con validaciones en el frontend para evitar datos inválidos.
+   - Mensajes de error claros y feedback visual.
+
+---
+
+## 📦 Estructura de Carpetas
+
+```
+src/
+├── components/
+│   ├── empleados/
+│   └── surcursales/
+├── services/
+├── stores/
+├── types/
+├── views/
+└── router/
 ```
 
-### Compile and Hot-Reload for Development
+---
 
-```sh
-npm run dev
-```
+## 🧩 ¿Por qué esta arquitectura?
 
-### Type-Check, Compile and Minify for Production
+- **Separación de responsabilidades:** Cada capa tiene una función clara.
+- **Facilidad de pruebas:** Los servicios y stores pueden ser testeados sin depender de la UI.
+- **Escalabilidad:** Permite agregar nuevas entidades (por ejemplo, productos, clientes) sin reescribir la base.
+- **Reutilización:** Componentes y lógica reutilizables en diferentes partes de la app.
 
-```sh
-npm run build
-```
+---
 
-### Lint with [ESLint](https://eslint.org/)
+## 📋 Instalación y uso
 
-```sh
-npm run lint
-```
+1. Instala dependencias:
+
+   ```bash
+   npm install
+   ```
+
+2. Corre el servidor de desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+3. Accede a la app en `http://localhost:5173` (o el puerto que indique Vite).
+
+---
+
+## 📚 Recursos
+
+- [Clean Architecture](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Vue 3 Docs](https://vuejs.org/)
+- [Pinia Docs](https://pinia.vuejs.org/)

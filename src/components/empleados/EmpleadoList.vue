@@ -1,47 +1,134 @@
 <template>
-  <div class="flex flex-col gap-4">
-    <div class="flex justify-between items-center">
-      <span class="text-gray-500 text-sm">{{ store.empleados.length }} empleados registrados</span>
-      <Button label="Nuevo Empleado" icon="pi pi-plus" @click="openCreate" />
+  <div class="flex flex-col gap-6">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-xl font-bold text-slate-800 tracking-tight">Empleados</h1>
+        <p class="text-sm text-slate-400 mt-0.5">
+          {{
+            store.empleados.length > 0
+              ? `${store.empleados.length} empleado${store.empleados.length !== 1 ? 's' : ''} registrado${store.empleados.length !== 1 ? 's' : ''}`
+              : 'Administrá tu equipo de trabajo'
+          }}
+        </p>
+      </div>
+
+      <Button
+        label="Nuevo Empleado"
+        icon="pi pi-plus"
+        class="rounded-xl! bg-emerald-500! hover:bg-emerald-600! border-emerald-500! text-sm! font-semibold!"
+        @click="openCreate"
+      />
     </div>
 
-    <div v-if="store.isLoading" class="flex justify-center py-12">
-      <ProgressSpinner />
+    <!-- Loading -->
+    <div v-if="store.isLoading" class="flex flex-col items-center justify-center py-20 gap-3">
+      <ProgressSpinner style="width: 36px; height: 36px" strokeWidth="3" />
+      <p class="text-sm text-slate-400">Cargando empleados...</p>
     </div>
 
-    <div v-else-if="store.error" class="text-red-500 text-center py-6">
-      {{ store.error }}
+    <!-- Error -->
+    <div
+      v-else-if="store.error"
+      class="flex items-center gap-3 rounded-xl border border-red-100 bg-red-50 px-5 py-4 text-red-600"
+    >
+      <i class="pi pi-exclamation-triangle text-red-400" />
+      <span class="text-sm">{{ store.error }}</span>
     </div>
 
-    <div v-else-if="store.empleados.length === 0" class="text-center py-12 text-gray-400">
-      <i class="pi pi-users text-4xl mb-3 block" />
-      <p>No hay empleados registrados</p>
+    <!-- Empty state -->
+    <div
+      v-else-if="store.empleados.length === 0"
+      class="flex flex-col items-center justify-center py-20 text-center"
+    >
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 mb-4">
+        <i class="pi pi-users text-slate-300" style="font-size: 1.8rem" />
+      </div>
+      <h3 class="text-base font-semibold text-slate-600 mb-1">No hay empleados</h3>
+      <p class="text-sm text-slate-400 mb-5">Comenzá agregando tu primer empleado</p>
+      <Button
+        label="Crear empleado"
+        icon="pi pi-plus"
+        class="rounded-xl! bg-emerald-500! hover:bg-emerald-600! border-emerald-500! text-sm!"
+        @click="openCreate"
+      />
     </div>
 
-    <div v-else>
+    <!-- Tabla -->
+    <div v-else class="rounded-2xl border border-slate-200/80 bg-white shadow-sm overflow-hidden">
       <DataTable
         :value="store.empleados"
-        striped-rows
-        paginator
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20]"
-        class="w-full"
+        paginator
+        :pt="{
+          root: { class: 'w-full' },
+          header: { class: 'hidden' },
+          thead: { class: 'bg-slate-50 border-b border-slate-100' },
+          tbody: { class: 'divide-y divide-slate-100' },
+          paginator: { class: 'border-t border-slate-100 !rounded-none' },
+        }"
       >
-        <Column field="nombre" header="Nombre" sortable />
-        <Column field="email" header="Email" sortable />
-        <Column header="Sucursal">
+        <!-- Nombre -->
+        <Column field="nombre" sortable>
+          <template #header>
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Nombre</span>
+          </template>
           <template #body="{ data }">
-            {{ getSucursalNombre(data.sucursal_id) }}
+            <div class="flex items-center gap-3 py-1">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100"
+              >
+                <span class="text-xs font-bold text-emerald-600">
+                  {{ data.nombre.charAt(0).toUpperCase() }}
+                </span>
+              </div>
+              <span class="text-sm font-semibold text-slate-700">{{ data.nombre }}</span>
+            </div>
           </template>
         </Column>
-        <Column header="Acciones" style="width: 120px">
+
+        <!-- Email -->
+        <Column field="email" sortable>
+          <template #header>
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Email</span>
+          </template>
           <template #body="{ data }">
-            <div class="flex gap-2">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-envelope text-slate-300" style="font-size: 0.75rem" />
+              <span class="text-sm text-slate-500">{{ data.email }}</span>
+            </div>
+          </template>
+        </Column>
+
+        <!-- Sucursal -->
+        <Column>
+          <template #header>
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Sucursal</span>
+          </template>
+          <template #body="{ data }">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600"
+            >
+              <i class="pi pi-map-marker text-slate-400" style="font-size: 0.65rem" />
+              {{ getSucursalNombre(data.sucursal_id) }}
+            </span>
+          </template>
+        </Column>
+
+        <!-- Acciones -->
+        <Column header="" style="width: 90px">
+          <template #body="{ data }">
+            <div
+              class="flex items-center gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity"
+            >
               <Button
                 icon="pi pi-pencil"
                 severity="secondary"
                 rounded
                 text
+                size="small"
+                class="w-8! h-8! hover:bg-slate-100!"
                 @click="openEdit(data)"
               />
               <Button
@@ -49,6 +136,8 @@
                 severity="danger"
                 rounded
                 text
+                size="small"
+                class="w-8! h-8! hover:bg-red-50!"
                 @click="handleDelete(data.id)"
               />
             </div>
@@ -138,6 +227,7 @@ function handleDelete(id: number) {
     icon: 'pi pi-exclamation-triangle',
     acceptLabel: 'Eliminar',
     rejectLabel: 'Cancelar',
+    acceptClass: 'p-button-danger',
     accept: async () => {
       try {
         await store.remove(id)

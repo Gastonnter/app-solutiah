@@ -1,28 +1,77 @@
 <template>
-  <div class="flex flex-col gap-4">
-    <div class="flex justify-between items-center">
-      <InputText
-        v-model="search"
-        placeholder="Buscar por nombre o ciudad..."
-        class="w-80"
-        @input="handleSearch"
+  <div class="flex flex-col gap-6">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-xl font-bold text-slate-800 tracking-tight">Sucursales</h1>
+        <p class="text-sm text-slate-400 mt-0.5">
+          {{
+            store.sucursales.length > 0
+              ? `${store.sucursales.length} sucursal${store.sucursales.length !== 1 ? 'es' : ''} registrada${store.sucursales.length !== 1 ? 's' : ''}`
+              : 'Administrá tus sucursales'
+          }}
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Search -->
+        <div class="relative">
+          <i
+            class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            style="font-size: 0.8rem"
+          />
+          <InputText
+            v-model="search"
+            placeholder="Buscar por nombre o ciudad..."
+            class="pl-9! pr-4! rounded-xl! border-slate-200! text-sm! w-64 focus:ring-emerald-400!"
+            @input="handleSearch"
+          />
+        </div>
+
+        <!-- Nueva sucursal -->
+        <Button
+          label="Nueva Sucursal"
+          icon="pi pi-plus"
+          class="rounded-xl! bg-emerald-500! hover:bg-emerald-600! border-emerald-500! text-sm! font-semibold! whitespace-nowrap"
+          @click="openCreate"
+        />
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div v-if="store.isLoading" class="flex flex-col items-center justify-center py-20 gap-3">
+      <ProgressSpinner style="width: 36px; height: 36px" strokeWidth="3" />
+      <p class="text-sm text-slate-400">Cargando sucursales...</p>
+    </div>
+
+    <!-- Error -->
+    <div
+      v-else-if="store.error"
+      class="flex items-center gap-3 rounded-xl border border-red-100 bg-red-50 px-5 py-4 text-red-600"
+    >
+      <i class="pi pi-exclamation-triangle text-red-400" />
+      <span class="text-sm">{{ store.error }}</span>
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="store.sucursales.length === 0"
+      class="flex flex-col items-center justify-center py-20 text-center"
+    >
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 mb-4">
+        <i class="pi pi-building text-slate-300" style="font-size: 1.8rem" />
+      </div>
+      <h3 class="text-base font-semibold text-slate-600 mb-1">No hay sucursales</h3>
+      <p class="text-sm text-slate-400 mb-5">Comenzá creando tu primera sucursal</p>
+      <Button
+        label="Crear sucursal"
+        icon="pi pi-plus"
+        class="rounded-xl! bg-emerald-500! hover:bg-emerald-600! border-emerald-500! text-sm!"
+        @click="openCreate"
       />
-      <Button label="Nueva Sucursal" icon="pi pi-plus" @click="openCreate" />
     </div>
 
-    <div v-if="store.isLoading" class="flex justify-center py-12">
-      <ProgressSpinner />
-    </div>
-
-    <div v-else-if="store.error" class="text-red-500 text-center py-6">
-      {{ store.error }}
-    </div>
-
-    <div v-else-if="store.sucursales.length === 0" class="text-center py-12 text-gray-400">
-      <i class="pi pi-building text-4xl mb-3 block" />
-      <p>No hay sucursales registradas</p>
-    </div>
-
+    <!-- Grid -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <SucursalCard
         v-for="sucursal in store.sucursales"
@@ -33,6 +82,7 @@
       />
     </div>
 
+    <!-- Form dialog -->
     <SucursalForm
       v-model:visible="formVisible"
       :sucursal="selectedSucursal"
@@ -108,6 +158,7 @@ function handleDelete(id: number) {
     icon: 'pi pi-exclamation-triangle',
     acceptLabel: 'Eliminar',
     rejectLabel: 'Cancelar',
+    acceptClass: 'p-button-danger',
     accept: async () => {
       try {
         await store.remove(id)

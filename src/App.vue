@@ -1,26 +1,49 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
-    <nav class="bg-white shadow-md px-6 py-4 flex gap-6 items-center">
-      <span class="font-bold text-xl text-blue-600">Solutiah</span>
-      <RouterLink
-        to="/sucursales"
-        class="text-gray-600 hover:text-blue-600 font-medium transition-colors"
-        active-class="text-blue-600 border-b-2 border-blue-600"
-      >
-        Sucursales
-      </RouterLink>
-      <RouterLink
-        to="/empleados"
-        class="text-gray-600 hover:text-blue-600 font-medium transition-colors"
-        active-class="text-blue-600 border-b-2 border-blue-600"
-      >
-        Empleados
-      </RouterLink>
+  <div class="min-h-screen bg-slate-50">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm">
+      <div class="mx-auto max-w-7xl px-6 h-14 flex items-center gap-8">
+        <!-- Logo -->
+        <div class="flex items-center gap-2.5 mr-2">
+          <div
+            class="flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-emerald-400 to-teal-600 shadow-sm"
+          >
+            <i class="pi pi-building text-white" style="font-size: 0.75rem" />
+          </div>
+          <span class="font-bold text-slate-800 tracking-tight text-base">Solutiah</span>
+        </div>
+
+        <!-- Divider vertical -->
+        <div class="h-5 w-px bg-slate-200" />
+
+        <!-- Nav links -->
+        <div class="flex items-center gap-1">
+          <RouterLink
+            to="/sucursales"
+            class="nav-link relative flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all duration-150"
+            active-class="!text-emerald-600 !bg-emerald-50 hover:!bg-emerald-50 hover:!text-emerald-600"
+          >
+            <i class="pi pi-map-marker" style="font-size: 0.8rem" />
+            Sucursales
+          </RouterLink>
+          <RouterLink
+            to="/empleados"
+            class="nav-link relative flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all duration-150"
+            active-class="!text-emerald-600 !bg-emerald-50 hover:!bg-emerald-50 hover:!text-emerald-600"
+          >
+            <i class="pi pi-users" style="font-size: 0.8rem" />
+            Empleados
+          </RouterLink>
+        </div>
+      </div>
     </nav>
-    <main class="p-6">
+
+    <!-- Main content -->
+    <main class="mx-auto max-w-7xl px-6 py-8">
       <RouterView />
     </main>
-    <Toast />
+
+    <Toast position="bottom-right" />
     <ConfirmDialog />
   </div>
 </template>
